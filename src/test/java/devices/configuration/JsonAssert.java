@@ -60,7 +60,7 @@ public class JsonAssert {
 
     @SneakyThrows
     public static String json(Object object) {
-        return JsonConfiguration.OBJECT_MAPPER.writeValueAsString(object);
+        return JsonConfiguration.json(object);
     }
 
     private static void assertJson(String expected, String actual, boolean strict) throws JSONException {

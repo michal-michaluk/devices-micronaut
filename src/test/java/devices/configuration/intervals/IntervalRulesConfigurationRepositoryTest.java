@@ -1,5 +1,6 @@
 package devices.configuration.intervals;
 
+import devices.configuration.tools.FeatureConfiguration;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import jakarta.inject.Inject;
 import org.junit.jupiter.api.Test;
@@ -7,16 +8,19 @@ import org.junit.jupiter.api.Test;
 import static devices.configuration.JsonAssert.assertThat;
 
 @MicronautTest
-class IntervalRulesDocumentRepositoryTest {
+class IntervalRulesConfigurationRepositoryTest {
 
     @Inject
-    private IntervalRulesDocumentRepository repository;
+    private FeatureConfiguration repository;
+
+    @Inject
+    private IntervalRulesConfigurationRepository subject;
 
     @Test
     void shouldSaveAndLoadIntervalRules() {
         // when
-        repository.save(IntervalRulesFixture.currentRules());
-        var result = repository.get();
+        repository.save("IntervalRules", IntervalRulesFixture.currentRules());
+        var result = subject.get();
 
         // then
         assertThat(result).hasFieldsLike(IntervalRulesFixture.currentRules());
