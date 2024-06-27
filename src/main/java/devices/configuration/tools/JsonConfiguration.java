@@ -9,9 +9,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import io.micronaut.context.annotation.Factory;
+import jakarta.inject.Singleton;
 
 import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.ANY;
 
+@Factory
 public class JsonConfiguration {
 
     public static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
@@ -24,6 +27,11 @@ public class JsonConfiguration {
             .configure(JsonGenerator.Feature.WRITE_BIGDECIMAL_AS_PLAIN, true)
             .registerModule(new SimpleModule()
             );
+
+    @Singleton
+    ObjectMapper objectMapper() {
+        return OBJECT_MAPPER;
+    }
 
     public static <T> T parse(String json, Class<T> type) {
         try {
