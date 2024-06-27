@@ -1,5 +1,6 @@
 package devices.configuration.communication.protocols.iot16;
 
+import devices.configuration.intervals.IntervalsService;
 import io.micronaut.http.annotation.Body;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.annotation.PathVariable;
@@ -11,6 +12,7 @@ import java.time.Instant;
 @Controller
 @RequiredArgsConstructor
 class IoT16Controller {
+    private final IntervalsService intervals;
 
     @Post(uri = "/protocols/iot16/bootnotification/{deviceId}",
             consumes = "application/json", produces = "application/json")
@@ -18,7 +20,7 @@ class IoT16Controller {
                                                     @Body BootNotificationRequest request) {
         return BootNotificationResponse.builder()
                 .currentTime(Instant.now().toString())
-                .interval(1800)
+                .interval((int) intervals.calculateInterval(request.toBootNotificationEvent(deviceId)).getSeconds())
                 .status(BootNotificationResponse.Status.Accepted)
                 .build();
     }
