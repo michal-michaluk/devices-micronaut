@@ -1,0 +1,92 @@
+plugins {
+    id("com.github.johnrengelman.shadow") version "8.1.1"
+    id("io.micronaut.application") version "4.4.0"
+    id("com.google.cloud.tools.jib") version "2.8.0"
+    id("io.micronaut.aot") version "4.4.0"
+}
+
+version = "0.1"
+group = "devices.configuration"
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    annotationProcessor("org.projectlombok:lombok:1.18.24")
+    annotationProcessor("io.micronaut.data:micronaut-data-processor")
+    annotationProcessor("io.micronaut:micronaut-http-validation")
+    annotationProcessor("io.micronaut.security:micronaut-security-annotations")
+    implementation("io.micronaut:micronaut-jackson-databind")
+    implementation("io.micronaut.data:micronaut-data-hibernate-jpa")
+    implementation("io.micronaut.kafka:micronaut-kafka")
+    implementation("io.micronaut.liquibase:micronaut-liquibase")
+    implementation("io.micronaut.security:micronaut-security-jwt")
+    implementation("io.micronaut.sql:micronaut-jdbc-hikari")
+    compileOnly("io.micronaut:micronaut-http-client")
+    runtimeOnly("ch.qos.logback:logback-classic")
+    runtimeOnly("org.postgresql:postgresql")
+    testImplementation("org.mockito:mockito-core:5.12.0")
+    testImplementation("io.micronaut:micronaut-http-client")
+    testImplementation("org.assertj:assertj-core")
+    testImplementation "org.skyscreamer:jsonassert:1.5.1"
+    testImplementation("org.testcontainers:junit-jupiter")
+    testImplementation("org.testcontainers:kafka")
+    testImplementation("org.testcontainers:postgresql")
+    testImplementation("org.testcontainers:testcontainers")
+    aotPlugins platform("io.micronaut.platform:micronaut-platform:4.5.0")
+    aotPlugins("io.micronaut.security:micronaut-security-aot")
+}
+
+configurations {
+    compileOnly { extendsFrom annotationProcessor }
+    testCompileOnly { extendsFrom annotationProcessor }
+    testAnnotationProcessor { extendsFrom annotationProcessor }
+}
+
+application {
+    mainClass = "devices.configuration.Application"
+}
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+
+tasks {
+    jib {
+        to {
+            image = "gcr.io/myapp/jib-image"
+        }
+    }
+}
+graalvmNative.toolchainDetection = false
+micronaut {
+    runtime("netty")
+    testRuntime("junit5")
+    processing {
+        incremental(true)
+        annotations("devices.configuration.*")
+    }
+    aot {
+    // Please review carefully the optimizations enabled below
+    // Check https://micronaut-projects.github.io/micronaut-aot/latest/guide/ for more details
+        optimizeServiceLoading = false
+        convertYamlToJava = false
+        precomputeOperations = true
+        cacheEnvironment = true
+        optimizeClassLoading = true
+        deduceEnvironment = true
+        optimizeNetty = true
+        replaceLogbackXml = true
+        configurationProperties.put("micronaut.security.jwks.enabled","false")
+    }
+}
+
+
+tasks.named("dockerfileNative") {
+    jdkVersion = "21"
+}
+
+

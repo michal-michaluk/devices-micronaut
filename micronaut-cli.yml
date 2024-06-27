@@ -1,0 +1,6 @@
+applicationType: default
+defaultPackage: devices.configuration
+testFramework: junit
+sourceLanguage: java
+buildTool: gradle
+features: [app-name, assertj, data, data-jpa, gradle, http-client-test, jackson-databind, java, java-application, jdbc-hikari, jib, junit, kafka, liquibase, logback, micronaut-aot, micronaut-build, micronaut-http-validation, netty-server, postgres, properties, readme, security-annotations, security-jwt, shade, static-resources, testcontainers]
