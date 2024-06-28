@@ -1,5 +1,6 @@
 package devices.configuration.intervals;
 
+import devices.configuration.TestTransactions;
 import devices.configuration.tools.FeatureConfiguration;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import jakarta.inject.Inject;
@@ -16,11 +17,14 @@ class IntervalRulesConfigurationRepositoryTest {
     @Inject
     private IntervalRulesConfigurationRepository subject;
 
+    @Inject
+    TestTransactions tx;
+
     @Test
     void shouldSaveAndLoadIntervalRules() {
         // when
-        repository.save("IntervalRules", IntervalRulesFixture.currentRules());
-        var result = subject.get();
+        tx.transactional(() -> repository.save("IntervalRules", IntervalRulesFixture.currentRules()));
+        var result = tx.transactional(() -> subject.get());
 
         // then
         assertThat(result).hasFieldsLike(IntervalRulesFixture.currentRules());
@@ -78,4 +82,5 @@ class IntervalRulesConfigurationRepositoryTest {
                 }
                 """);
     }
+
 }
