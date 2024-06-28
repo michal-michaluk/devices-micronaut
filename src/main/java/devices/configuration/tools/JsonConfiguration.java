@@ -11,6 +11,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.micronaut.context.annotation.Factory;
+import io.micronaut.context.annotation.Replaces;
 import jakarta.inject.Singleton;
 
 import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.ANY;
@@ -32,6 +33,7 @@ public class JsonConfiguration {
             .registerModule(new SimpleModule()
             );
 
+    @Replaces
     @Singleton
     public ObjectMapper objectMapper() {
         return OBJECT_MAPPER;
